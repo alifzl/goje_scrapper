@@ -1,19 +1,25 @@
 from setuptools import setup, find_packages
 
 classifiers = [
-    'Development Status :: 5 - Production/Stable',
-    'Intended Audience :: Education',
-    'Operating System :: Unix',
-    'Operating System :: MacOS :: MacOS X',
-    'Operating System :: Microsoft :: Windows',
+    'Development Status :: 6 - Mature',
+    'Intended Audience :: Developers',
+    'Operating System :: OS Independent',
     'License :: OSI Approved :: MIT License',
-    'Programming Language :: Python :: 3'
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Topic :: Internet',
+    'Topic :: Software Development :: Libraries',
+    'Topic :: Software Development :: Testing',
+    'Topic :: Text Processing',
+    'Topic :: Utilities'
+
+
 ]
 
 setup(
     name='Goje',
     version='0.0.1',
-    description='Unofficial Library for Scrapping rotten tomato.',
+    description='Unofficial Library for Scrapping Rotten Tomato.',
     long_description=open('README.txt').read() + '\n\n' + open('CHANGELOG.txt').read(),
     url='https://faze.li',
     author='Ali Fazeli',
