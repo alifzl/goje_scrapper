@@ -15,6 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
+
 class Goje:
     BASE_URL = "https://www.rottentomatoes.com/api/private/v2.0"
     SEARCH_URL = "{base_url}/search".format(base_url=BASE_URL)
@@ -46,8 +47,6 @@ class Goje:
         r = requests.get(url=Goje.SEARCH_URL, params={"q": term, "limit": limit})
         r.raise_for_status()
         return r.json()
-
-
 
 
 class GojeScraper(Goje):
@@ -284,7 +283,6 @@ class GojeScraper(Goje):
 
         movie_metadata['movie_main_casts'] = main_casts_and_crew
 
-
         other_casts_and_crew = list()
         for i in range(len(other_casts)):
             tmp = BeautifulSoup(str(other_casts[i]), "lxml")
@@ -302,7 +300,6 @@ class GojeScraper(Goje):
                 other_casts_and_crew.append([re.findall(r'"([^"]*)"', str(label)),element['data-src'][other_cast_pictures_large_index:]])
 
         movie_metadata['movie_other_casts'] = other_casts_and_crew
-
 
         self.metadata = movie_metadata
         self.movie_genre = self.extract_genre(self.metadata)
