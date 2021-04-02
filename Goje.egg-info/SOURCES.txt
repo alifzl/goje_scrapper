@@ -1,0 +1,9 @@
+README.txt
+setup.py
+Goje.egg-info/PKG-INFO
+Goje.egg-info/SOURCES.txt
+Goje.egg-info/dependency_links.txt
+Goje.egg-info/requires.txt
+Goje.egg-info/top_level.txt
+goje_scrapper/__init__.py
+goje_scrapper/goje.py

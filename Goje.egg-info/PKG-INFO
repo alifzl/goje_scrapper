@@ -1,0 +1,25 @@
+Metadata-Version: 1.1
+Name: Goje
+Version: 0.0.1
+Summary: Unofficial Library for Scrapping rotten tomato.
+Home-page: https://faze.li
+Author: Ali Fazeli
+Author-email: a.fazeli95@gmail.com
+License: MIT
+Description: Unofficial Library for Scrapping rotten tomato.
+        
+        Change Log
+        ==========
+        
+        0.0.1 (02-04-2021)
+        -------------------
+        - First Release of Goje
+Keywords: scrapper
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Education
+Classifier: Operating System :: Unix
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
