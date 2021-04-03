@@ -1,7 +1,7 @@
 # Unofficial Library for Scrapping [Rotten Tomato](http://rottentomatoes.com/)
 
-Goje, in Persian (گوجه) means tomato.
-_Goje_ is another library for scrapping Movie Metadata from  [Rotten Tomato](http://rottentomatoes.com) movie database.
+Goje, in Persian (گوجه) means tomato.  <br>
+_Goje_ is another library for scrapping Movie Metadata from  [Rotten Tomato](http://rottentomatoes.com) movie database. <br>
 it is mainly developed based on native python libraries. and believe me it is blazing fast!
 
 ## Installation
