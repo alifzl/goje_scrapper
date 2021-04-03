@@ -4,3 +4,15 @@ Change Log
 0.0.1 (02-04-2021)
 -------------------
 - First Release of Goje
+
+0.0.2 (03-04-2021)
+-------------------
+- Typo fix
+
+0.0.3 (03-04-2021)
+-------------------
+- First Working Version
+
+0.0.4 (03-04-2021)
+-------------------
+- Everything is working fine

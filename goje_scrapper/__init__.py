@@ -1,2 +1,2 @@
-from .goje import Goje
-from .goje import GojeScraper
+from goje_scrapper.goje import Goje
+from goje_scrapper.goje import GojeScraper
