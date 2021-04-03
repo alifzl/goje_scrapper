@@ -82,4 +82,4 @@ print(review_list)
 
 ## Contribute, Issues and Stuff
 
-Feel free to open an issue in Github repository of Goje.
+Feel free to open an issue in [Github repository of Goje](https://github.com/alifzl/goje_scrapper).

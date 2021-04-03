@@ -31,7 +31,7 @@ setup(
     version='0.0.4',
     description='Unofficial Library for Scrapping Rotten Tomato.',
     long_description=long_description,
-    url='https://faze.li',
+    url='https://github.com/alifzl/goje_scrapper',
     author='Ali Fazeli',
     author_email='a.fazeli95@gmail.com',
     license='MIT',
