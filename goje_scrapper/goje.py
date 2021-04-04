@@ -30,7 +30,10 @@ class Goje:
     def extract_metadata(self, **kwargs):
         pass
 
-    def extract_reviews(self, **kwargs):
+    def extract_critic_reviews(self, **kwargs):
+        pass
+
+    def extract_audience_reviews(self):
         pass
 
     def extract_movie_links(self,**kwargs):
@@ -39,7 +42,7 @@ class Goje:
     def _extract_section(self, section):
         pass
 
-    def number_of_review_pages(self, **kwargs):
+    def number_of_review_pages(self):
         pass
 
     @staticmethod
@@ -108,7 +111,48 @@ class GojeScraper(Goje):
         number_of_review_pages = int(str(page_info[0])[page_info_start+9:page_info_finish-1])
         return number_of_review_pages
 
-    def extract_reviews(self,page_number=1):
+    def extract_audience_reviews(self):
+
+        page_movie_reviews_pages_url = urlopen(self.url + '/reviews?type=user')
+        page_movie_reviews_pages = BeautifulSoup(page_movie_reviews_pages_url, "lxml")
+
+        raw_reviews = page_movie_reviews_pages.find_all('div', class_='reviews-movie')
+        raw_reviews_info = BeautifulSoup(str(raw_reviews), "lxml")
+        all_reviews = raw_reviews_info.find_all('li', class_='audience-reviews__item')
+        all_reviews_info = BeautifulSoup(str(all_reviews), "lxml")
+
+        audience_critic_results = list()
+        for i in range(len(all_reviews)):
+            try:
+                audience = all_reviews_info.find_all('a', class_='audience-reviews__name')
+                audience_info = BeautifulSoup(str(audience[i]), "lxml")
+                audience_name = audience_info.string.replace('\n', '').replace('\r', '').strip()
+
+                review_date = all_reviews_info.find_all('span', class_='audience-reviews__duration')
+                review_date_info = BeautifulSoup(str(review_date[i]), "lxml")
+                review_date_info_finish = str(review_date_info)[:-1].find("</span>")
+                review_date_info_start = [m.start() for m in re.finditer(r">", str(review_date_info))][2]
+                review_date = str(review_date_info)[review_date_info_start + 1:review_date_info_finish]
+
+                #review_stars = all_reviews_info.find_all('span', class_='audience-reviews__score')
+                #review_stars_info = BeautifulSoup(str(review_stars[i]), "lxml")
+                #review_stars_info_finish = str(review_stars_info)[:-1].find("</span>")
+                #review_stars_info_start = [m.start() for m in re.finditer(r">", str(review_stars_info))][1]
+                #review_stars = str(review_stars_info)[review_stars_info_start + 1:review_stars_info_finish]
+
+                # Audience Review Section
+                review_info = all_reviews_info.find_all('p', class_='audience-reviews__review--mobile js-review-text clamp clamp-4 js-clamp')
+                review_raw = review_info[i].string
+                review = str(review_raw).replace('\n', '').strip()
+
+                audience_critic_results.append([audience_name,review_date,review])
+
+            except TypeError:
+                pass
+
+        return audience_critic_results
+
+    def extract_critic_reviews(self,page_number=1):
 
         page_movie_reviews_url = urlopen(self.url + '/reviews')
         soup = BeautifulSoup(page_movie_reviews_url, "lxml")

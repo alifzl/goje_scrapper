@@ -28,7 +28,7 @@ except(IOError, ImportError):
 
 setup(
     name='Goje',
-    version='0.0.4',
+    version='0.1.0',
     description='Unofficial Library for Scrapping Rotten Tomato.',
     long_description=long_description,
     url='https://github.com/alifzl/goje_scrapper',

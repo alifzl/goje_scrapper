@@ -10,6 +10,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/goje_scrapper/goje.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/tests/test_extract_all_audiance_reviews.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>

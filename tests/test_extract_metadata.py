@@ -1,4 +1,4 @@
-from goje_scrapper.src.goje_scrapper.goje import *
+from goje_scrapper.goje import *
 
 movie_url = 'https://www.rottentomatoes.com/m/a_separation_2011'
 
