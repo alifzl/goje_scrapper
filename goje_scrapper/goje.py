@@ -111,7 +111,7 @@ class GojeScraper(Goje):
         number_of_review_pages = int(str(page_info[0])[page_info_start+9:page_info_finish-1])
         return number_of_review_pages
 
-    def extract_audience_reviews(self):
+    def extract_audience_reviews(self, page_number=1):
 
         page_movie_reviews_pages_url = urlopen(self.url + '/reviews?type=user')
         page_movie_reviews_pages = BeautifulSoup(page_movie_reviews_pages_url, "lxml")
@@ -120,6 +120,40 @@ class GojeScraper(Goje):
         raw_reviews_info = BeautifulSoup(str(raw_reviews), "lxml")
         all_reviews = raw_reviews_info.find_all('li', class_='audience-reviews__item')
         all_reviews_info = BeautifulSoup(str(all_reviews), "lxml")
+
+        def next_audience_review_page():
+            from selenium import webdriver
+            from selenium.webdriver.support.ui import WebDriverWait
+            import time
+            from selenium.webdriver.chrome.options import Options
+
+            chrome_path = 'chromedriver'
+            driver = webdriver.Chrome(chrome_path)
+
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_argument("--disable-popup-blocking")
+
+            driver.maximize_window()
+            driver.get(self.url + '/reviews?type=user')
+            time.sleep(3)
+
+            report1 = driver.find_element_by_xpath(
+                '//*[@id="content"]/div/div/nav[4]/button[2]')
+
+            report1.click()
+
+            time.sleep(5)
+
+            #driver.close()
+            html = driver.execute_script("return document.documentElement.outerHTML")
+            return html
+
+        if page_number == 1:
+            print("we need only 20 audience reviews")
+            print(next_audience_review_page())
+        else:
+            print("we need {0} audience reviews".format(page_number*20))
+
 
         audience_critic_results = list()
         for i in range(len(all_reviews)):
@@ -134,12 +168,6 @@ class GojeScraper(Goje):
                 review_date_info_start = [m.start() for m in re.finditer(r">", str(review_date_info))][2]
                 review_date = str(review_date_info)[review_date_info_start + 1:review_date_info_finish]
 
-                #review_stars = all_reviews_info.find_all('span', class_='audience-reviews__score')
-                #review_stars_info = BeautifulSoup(str(review_stars[i]), "lxml")
-                #review_stars_info_finish = str(review_stars_info)[:-1].find("</span>")
-                #review_stars_info_start = [m.start() for m in re.finditer(r">", str(review_stars_info))][1]
-                #review_stars = str(review_stars_info)[review_stars_info_start + 1:review_stars_info_finish]
-
                 # Audience Review Section
                 review_info = all_reviews_info.find_all('p', class_='audience-reviews__review--mobile js-review-text clamp clamp-4 js-clamp')
                 review_raw = review_info[i].string
@@ -152,7 +180,7 @@ class GojeScraper(Goje):
 
         return audience_critic_results
 
-    def extract_critic_reviews(self,page_number=1):
+    def extract_critic_reviews(self, page_number=1):
 
         page_movie_reviews_url = urlopen(self.url + '/reviews')
         soup = BeautifulSoup(page_movie_reviews_url, "lxml")
