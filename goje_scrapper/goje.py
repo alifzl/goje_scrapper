@@ -63,6 +63,18 @@ class GojeScraper(Goje):
             self.url = kwargs['movie_url']
 
     def extract_movie_links(self, start, end):
+        """ extract_movie_links Function
+
+        Extracts Movie Links from Rotten Tomato with the given start and End year of movie production
+
+        Args:
+            start (int): The start year parameter.
+            end (int): The end year parameter.
+
+        Returns:
+            List of Movie Links
+        """
+
         list_link_all_year = []
         for year in range(start, end):
             url = "https://www.rottentomatoes.com/top/bestofrt/?year=%s" % year
@@ -162,7 +174,7 @@ class GojeScraper(Goje):
         driver = webdriver.Chrome(chrome_path, chrome_options=chrome_options)
 
         driver.get(self.url + '/reviews?type=user')
-        time.sleep(3)
+        time.sleep(1)
 
         p = 1
         all_audience_critic_results = list()
@@ -174,7 +186,7 @@ class GojeScraper(Goje):
                     next_page_button = driver.find_element_by_xpath(
                     '//*[@id="content"]/div/div/nav[4]/button[2]')
                     next_page_button.click()
-                    time.sleep(5)
+                    time.sleep(1)
 
                 output = BeautifulSoup(driver.page_source, 'lxml')
                 raw_reviews = output.find_all('div', class_='reviews-movie')
