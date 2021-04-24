@@ -1,6 +1,5 @@
 """
 Unofficial Python Scrapper for Rotten Tomato.
-Author: Ali Fazeli
 Website: https://faze.li
 """
 
@@ -33,10 +32,10 @@ class Goje:
     def extract_critic_reviews(self, **kwargs):
         pass
 
-    def extract_audience_reviews(self):
+    def extract_audience_reviews(self, **kwargs):
         pass
 
-    def extract_movie_links(self,**kwargs):
+    def extract_movie_links(self, **kwargs):
         pass
 
     def _extract_section(self, section):
@@ -111,74 +110,100 @@ class GojeScraper(Goje):
         number_of_review_pages = int(str(page_info[0])[page_info_start+9:page_info_finish-1])
         return number_of_review_pages
 
-    def extract_audience_reviews(self, page_number=1):
+    def extract_audience_reviews(self):
 
         page_movie_reviews_pages_url = urlopen(self.url + '/reviews?type=user')
         page_movie_reviews_pages = BeautifulSoup(page_movie_reviews_pages_url, "lxml")
-
         raw_reviews = page_movie_reviews_pages.find_all('div', class_='reviews-movie')
         raw_reviews_info = BeautifulSoup(str(raw_reviews), "lxml")
         all_reviews = raw_reviews_info.find_all('li', class_='audience-reviews__item')
         all_reviews_info = BeautifulSoup(str(all_reviews), "lxml")
 
-        def next_audience_review_page():
-            from selenium import webdriver
-            from selenium.webdriver.support.ui import WebDriverWait
-            import time
-            from selenium.webdriver.chrome.options import Options
+        def collect_audience_reviews(review_name=all_reviews):
+            audience_critic_results = list()
+            for i in range(len(review_name)):
+                try:
+                    audience = all_reviews_info.find_all('a', class_='audience-reviews__name')
+                    audience_info = BeautifulSoup(str(audience[i]), "lxml")
+                    audience_name = audience_info.string.replace('\n', '').replace('\r', '').strip()
 
-            chrome_path = 'chromedriver'
-            driver = webdriver.Chrome(chrome_path)
+                    review_date = all_reviews_info.find_all('span', class_='audience-reviews__duration')
+                    review_date_info = BeautifulSoup(str(review_date[i]), "lxml")
+                    review_date_info_finish = str(review_date_info)[:-1].find("</span>")
+                    review_date_info_start = [m.start() for m in re.finditer(r">", str(review_date_info))][2]
+                    review_date = str(review_date_info)[review_date_info_start + 1:review_date_info_finish]
 
-            chrome_options = webdriver.ChromeOptions()
-            chrome_options.add_argument("--disable-popup-blocking")
+                    # Audience Review Section
+                    review_info = all_reviews_info.find_all('p',
+                                                       class_='audience-reviews__review--mobile js-review-text clamp clamp-4 js-clamp')
+                    review_raw = review_info[i].string
+                    review = str(review_raw).replace('\n', '').strip()
 
-            driver.maximize_window()
-            driver.get(self.url + '/reviews?type=user')
-            time.sleep(3)
+                    audience_critic_results.append([audience_name, review_date, review])
 
+                except TypeError:
+                    pass
+            return audience_critic_results
+        return collect_audience_reviews()
+
+    def extract_all_audience_reviews(self, page_number=3):
+
+        from selenium import webdriver
+        from selenium.webdriver.support.ui import WebDriverWait
+        import time
+        from selenium.webdriver.chrome.options import Options
+
+        chrome_path = 'chromedriver'
+
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-popup-blocking")
+
+        driver = webdriver.Chrome(chrome_path, chrome_options=chrome_options)
+
+        driver.get(self.url + '/reviews?type=user')
+        time.sleep(3)
+
+        p = 1
+        all_audience_critic_results = list()
+        while p <= page_number:
             report1 = driver.find_element_by_xpath(
                 '//*[@id="content"]/div/div/nav[4]/button[2]')
 
             report1.click()
-
             time.sleep(5)
 
-            #driver.close()
-            html = driver.execute_script("return document.documentElement.outerHTML")
-            return html
+            output = BeautifulSoup(driver.page_source, 'lxml')
+            raw_reviews = output.find_all('div', class_='reviews-movie')
+            raw_reviews_info = BeautifulSoup(str(raw_reviews), "lxml")
+            all_reviews = raw_reviews_info.find_all('li', class_='audience-reviews__item')
+            all_reviews_info = BeautifulSoup(str(all_reviews), "lxml")
 
-        if page_number == 1:
-            print("we need only 20 audience reviews")
-            print(next_audience_review_page())
-        else:
-            print("we need {0} audience reviews".format(page_number*20))
+            for i in range(len(all_reviews)):
+                try:
+                    audience = all_reviews_info.find_all('a', class_='audience-reviews__name')
+                    audience_info = BeautifulSoup(str(audience[i]), "lxml")
+                    audience_name = audience_info.string.replace('\n', '').replace('\r', '').strip()
+                    review_date = all_reviews_info.find_all('span', class_='audience-reviews__duration')
+                    review_date_info = BeautifulSoup(str(review_date[i]), "lxml")
+                    review_date_info_finish = str(review_date_info)[:-1].find("</span>")
+                    review_date_info_start = [m.start() for m in re.finditer(r">", str(review_date_info))][2]
+                    review_date = str(review_date_info)[review_date_info_start + 1:review_date_info_finish]
 
+                    # Audience Review Section
+                    review_info = all_reviews_info.find_all('p',
+                                                            class_='audience-reviews__review--mobile js-review-text clamp clamp-4 js-clamp')
+                    review_raw = review_info[i].string
+                    review = str(review_raw).replace('\n', '').strip()
 
-        audience_critic_results = list()
-        for i in range(len(all_reviews)):
-            try:
-                audience = all_reviews_info.find_all('a', class_='audience-reviews__name')
-                audience_info = BeautifulSoup(str(audience[i]), "lxml")
-                audience_name = audience_info.string.replace('\n', '').replace('\r', '').strip()
+                    all_audience_critic_results.append([audience_name, review_date, review])
 
-                review_date = all_reviews_info.find_all('span', class_='audience-reviews__duration')
-                review_date_info = BeautifulSoup(str(review_date[i]), "lxml")
-                review_date_info_finish = str(review_date_info)[:-1].find("</span>")
-                review_date_info_start = [m.start() for m in re.finditer(r">", str(review_date_info))][2]
-                review_date = str(review_date_info)[review_date_info_start + 1:review_date_info_finish]
+                except Exception:
+                    pass
+            p += 1
+        driver.close()
+        return all_audience_critic_results
 
-                # Audience Review Section
-                review_info = all_reviews_info.find_all('p', class_='audience-reviews__review--mobile js-review-text clamp clamp-4 js-clamp')
-                review_raw = review_info[i].string
-                review = str(review_raw).replace('\n', '').strip()
-
-                audience_critic_results.append([audience_name,review_date,review])
-
-            except TypeError:
-                pass
-
-        return audience_critic_results
 
     def extract_critic_reviews(self, page_number=1):
 
