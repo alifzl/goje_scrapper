@@ -28,7 +28,7 @@ except(IOError, ImportError):
 
 setup(
     name='Goje',
-    version='0.1.0',
+    version='0.1.6',
     description='Unofficial Library for Scrapping Rotten Tomato.',
     long_description=long_description,
     url='https://github.com/alifzl/goje_scrapper',
@@ -38,5 +38,5 @@ setup(
     classifiers=classifiers,
     keywords='scrapper',
     packages=find_packages(),
-    install_requires=['requests', 'beautifulsoup4', 'lxml'],
+    install_requires=['requests', 'beautifulsoup4', 'lxml','selenium'],
     setup_requires=['setuptools>=41.0.1','wheel>=0.33.4','pypandoc'])

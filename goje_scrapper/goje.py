@@ -62,9 +62,9 @@ class GojeScraper(Goje):
         if 'movie_url' in kwargs.keys():
             self.url = kwargs['movie_url']
 
-    def extract_movie_links(self,start,end):
-        list_link_all_year=[]
-        for year in range(start,end):
+    def extract_movie_links(self, start, end):
+        list_link_all_year = []
+        for year in range(start, end):
             url = "https://www.rottentomatoes.com/top/bestofrt/?year=%s" % year
             html_data = requests.get(url)
 
@@ -167,17 +167,22 @@ class GojeScraper(Goje):
         p = 1
         all_audience_critic_results = list()
         while p <= page_number:
-            report1 = driver.find_element_by_xpath(
-                '//*[@id="content"]/div/div/nav[4]/button[2]')
+            try:
+                if p == 1:
+                    pass
+                else:
+                    next_page_button = driver.find_element_by_xpath(
+                    '//*[@id="content"]/div/div/nav[4]/button[2]')
+                    next_page_button.click()
+                    time.sleep(5)
 
-            report1.click()
-            time.sleep(5)
-
-            output = BeautifulSoup(driver.page_source, 'lxml')
-            raw_reviews = output.find_all('div', class_='reviews-movie')
-            raw_reviews_info = BeautifulSoup(str(raw_reviews), "lxml")
-            all_reviews = raw_reviews_info.find_all('li', class_='audience-reviews__item')
-            all_reviews_info = BeautifulSoup(str(all_reviews), "lxml")
+                output = BeautifulSoup(driver.page_source, 'lxml')
+                raw_reviews = output.find_all('div', class_='reviews-movie')
+                raw_reviews_info = BeautifulSoup(str(raw_reviews), "lxml")
+                all_reviews = raw_reviews_info.find_all('li', class_='audience-reviews__item')
+                all_reviews_info = BeautifulSoup(str(all_reviews), "lxml")
+            except Exception:
+                break
 
             for i in range(len(all_reviews)):
                 try:
@@ -200,10 +205,10 @@ class GojeScraper(Goje):
 
                 except Exception:
                     pass
+            print("{0}st. page scrapped!".format(p))
             p += 1
         driver.close()
         return all_audience_critic_results
-
 
     def extract_critic_reviews(self, page_number=1):
 
@@ -293,8 +298,8 @@ class GojeScraper(Goje):
         movie_info_length = len(soup_movie_info.find_all('li', class_='meta-row clearfix'))
 
         movie_synopsis = soup_movie_info.find_all('div', class_='movie_synopsis clamp clamp-6 js-clamp')
-        movie_synopsis_koon = BeautifulSoup(str(movie_synopsis), "lxml")
-        movie_synopsis_value = movie_synopsis_koon.find('div', class_='movie_synopsis clamp clamp-6 js-clamp').text.strip()
+        movie_synopsis_info = BeautifulSoup(str(movie_synopsis), "lxml")
+        movie_synopsis_value = movie_synopsis_info.find('div', class_='movie_synopsis clamp clamp-6 js-clamp').text.strip()
         movie_cast_section = soup.find_all('div', class_='panel-body content_body')
 
         for i in range(movie_info_length):
@@ -344,7 +349,6 @@ class GojeScraper(Goje):
         movie_metadata['info'] = movie_synopsis_value
 
         # Cast Section
-
         movie_cast_section_info = BeautifulSoup(str(movie_cast_section[1]), "lxml")
         # movie_reviews_info = BeautifulSoup(str(movie_cast_section[3]), "lxml")
 
@@ -360,7 +364,6 @@ class GojeScraper(Goje):
 
         main_casts = movie_cast_section_info.find_all('div', class_='cast-item media inlineBlock')
         other_casts = movie_cast_section_info.find_all('div', class_='cast-item media inlineBlock moreCasts hide')
-
 
         main_casts_and_crew = list()
         for i in range(len(main_casts)):
