@@ -217,7 +217,7 @@ class GojeScraper(Goje):
 
                 except Exception:
                     pass
-            print("{0}st. page scrapped!".format(p))
+            #print("{0}st. page scrapped!".format(p))
             p += 1
         driver.close()
         return all_audience_critic_results
@@ -362,7 +362,6 @@ class GojeScraper(Goje):
 
         # Cast Section
         movie_cast_section_info = BeautifulSoup(str(movie_cast_section[1]), "lxml")
-        # movie_reviews_info = BeautifulSoup(str(movie_cast_section[3]), "lxml")
 
         movie_qoute_info = BeautifulSoup(str(movie_cast_section[4]), "lxml")
 

@@ -1,4 +1,3 @@
-
 version: '3.1'
 
 services:
@@ -8,9 +7,14 @@ services:
     restart: always
     ports:
       - 27017:27017
+    volumes:
+      - ./.docker/mongodb/mongod.conf:/etc/mongod.conf
+      - ./.docker/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+      - ./.docker/mongodb/data/db/:/data/db/
+      - ./.docker/mongodb/data/log/:/var/log/mongodb/
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
-      MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: pass
 
   mongo-express:
     image: mongo-express
@@ -18,5 +22,5 @@ services:
     ports:
       - 8081:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${{ secrets.ME_CONFIG_MONGODB_ADMINUSERNAME }}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${{ secrets.ME_CONFIG_MONGODB_ADMINPASSWORD }}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: pass
